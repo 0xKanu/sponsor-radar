@@ -48,14 +48,6 @@ if df_london is None:
     st.info("Run the pipeline to populate the shortlist.")
     st.stop()
 
-# Hero strip: the demo's opening shot.
-total_funding = df_london["amount_m"].sum()
-total_roles = int(df_london["open_roles"].sum())
-c1, c2, c3 = st.columns(3)
-c1.metric("Hiring sponsors", len(df_london))
-c2.metric("Fresh funding tracked", f"${total_funding:,.0f}M")
-c3.metric("Open roles", f"{total_roles:,}")
-
 # Two controls. That's it.
 scope = st.segmented_control("Scope", ["London", "UK-wide"], default="London")
 query = st.text_input("Search companies", placeholder="e.g. Fractile")
@@ -66,6 +58,14 @@ if df is None:
     st.stop()
 if query:
     df = df[df["company"].str.contains(query, case=False, na=False)]
+
+# Hero strip follows the active scope: scope totals up top, search count in the feed caption.
+total_funding = df["amount_m"].sum()
+total_roles = int(df["open_roles"].sum())
+c1, c2, c3 = st.columns(3)
+c1.metric("Hiring sponsors", len(df))
+c2.metric("Fresh funding tracked", f"${total_funding:,.0f}M")
+c3.metric("Open roles", f"{total_roles:,}")
 
 st.caption(f"{len(df)} companies · ranked by funding + hiring + growth · A-rated sponsors only")
 
