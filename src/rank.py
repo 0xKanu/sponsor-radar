@@ -4,9 +4,14 @@ import json
 from datetime import date
 from pathlib import Path
 
-from present import COLUMNS, growth_str, hq_city, round_label
+from present import COLUMNS, apply_target, growth_str, hq_city, round_label
 
 DATA = Path(__file__).resolve().parent.parent / "data"
+
+
+def load_jobs() -> dict:
+    p = DATA / "company_jobs.json"
+    return json.loads(p.read_text()) if p.exists() else {}
 
 
 def score_tx(amount):
@@ -16,6 +21,7 @@ def score_tx(amount):
 def main():
     rows = json.loads((DATA / "dealroom_raw.json").read_text())
     matches = {m["uuid"]: m for m in json.loads((DATA / "matches.json").read_text())}
+    jobs_map = load_jobs()
     out = []
     for r in rows:
         tx, c = r["transaction"], r["company"]
@@ -35,6 +41,7 @@ def main():
         boost = 1.0
         amount_m = round((tx.get("amount") or 0) / 1e6, 2)
         match_score = m.get("score") or 0
+        apply_url, apply_kind = apply_target(jobs_map.get(c.get("uuid"), {}), c, c.get("dealroom_url"))
         out.append(
             {
                 "company": c.get("name"),
@@ -52,6 +59,8 @@ def main():
                 "sponsor_route": m.get("route"),
                 "verified": match_score >= 90,
                 "score": round(base * boost, 3),
+                "apply_url": apply_url,
+                "apply_kind": apply_kind,
                 "dealroom_url": c.get("dealroom_url"),
             }
         )

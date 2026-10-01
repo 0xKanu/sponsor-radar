@@ -7,15 +7,23 @@ from pathlib import Path
 from rapidfuzz import fuzz, process
 
 from match import load_sponsors, normalize
-from present import COLUMNS, growth_str, hq_city, round_label
+from present import COLUMNS, apply_target, growth_str, hq_city, round_label
 
 DATA = Path(__file__).resolve().parent.parent / "data"
+
+
+def load_jobs() -> dict:
+    import json as _json
+
+    p = DATA / "company_jobs.json"
+    return _json.loads(p.read_text()) if p.exists() else {}
 
 
 def main():
     rows = json.loads((DATA / "dealroom_raw_uk.json").read_text())
     sponsors = load_sponsors()
     names = [s.get("Organisation Name", "") for s in sponsors]
+    jobs_map = load_jobs()
     by_norm = {}
     for i, s in enumerate(sponsors):
         ns = normalize(s.get("Organisation Name", ""))
@@ -44,6 +52,7 @@ def main():
         )
         hq = hq_city(c)
         amount_m = round((tx.get("amount") or 0) / 1e6, 2)
+        apply_url, apply_kind = apply_target(jobs_map.get(c.get("uuid"), {}), c, c.get("dealroom_url"))
         out.append(
             {
                 "company": name,
@@ -61,6 +70,8 @@ def main():
                 "sponsor_route": s.get("Route"),
                 "verified": score >= 90,
                 "score": round(base, 3),
+                "apply_url": apply_url,
+                "apply_kind": apply_kind,
                 "dealroom_url": c.get("dealroom_url"),
             }
         )

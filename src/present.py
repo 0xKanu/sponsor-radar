@@ -19,6 +19,8 @@ COLUMNS = [
     "sponsor_route",
     "verified",
     "score",
+    "apply_url",
+    "apply_kind",
     "dealroom_url",
 ]
 
@@ -40,8 +42,7 @@ def growth_str(v) -> str:
     return f"{v:.0f}%" if isinstance(v, (int, float)) else ""
 
 
-def hq_city(company: dict) -> str:
-    return (
+def hq_city(company: dict) -> str:    return (
         next(
             (
                 (loc.get("city") or {}).get("name")
@@ -52,3 +53,13 @@ def hq_city(company: dict) -> str:
         )
         or ""
     )
+
+
+def apply_target(job: dict, company: dict, dealroom_url: str) -> tuple[str, str]:
+    """Best apply link: live job ad → company website → Dealroom profile."""
+    if job and job.get("apply_url"):
+        return job["apply_url"], "job"
+    site = (company.get("links") or {}).get("website")
+    if site:
+        return site, "site"
+    return dealroom_url or "", "dealroom"

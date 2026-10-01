@@ -26,6 +26,18 @@ def load_csv(prefix: str, sample: str) -> pd.DataFrame | None:
     return pd.read_csv(sp) if sp.exists() else None
 
 
+APPLY_LABEL = {"job": "View live role →", "site": "Company site →", "dealroom": "View roles →"}
+
+
+def apply_link(r) -> tuple[str, str]:
+    url = getattr(r, "apply_url", "")
+    if isinstance(url, str) and url:
+        return url, APPLY_LABEL.get(getattr(r, "apply_kind", ""), "View roles →")
+    if isinstance(r.dealroom_url, str) and r.dealroom_url:
+        return r.dealroom_url, "View roles →"
+    return "", ""
+
+
 df_london = load_csv("shortlist_2", "sample_shortlist.csv")
 df_uk = load_csv("shortlist_uk", "sample_shortlist_uk.csv")
 
@@ -72,8 +84,9 @@ for i, r in enumerate(df.itertuples(), start=1):
             if isinstance(r.dealroom_url, str) and r.dealroom_url:
                 st.link_button("Dealroom profile", r.dealroom_url)
         with right:
-            if isinstance(r.dealroom_url, str) and r.dealroom_url:
-                st.link_button("View roles →", r.dealroom_url)
+            url, label = apply_link(r)
+            if url:
+                st.link_button(label, url)
 
 st.divider()
 st.caption("Data: Dealroom API · GOV.UK sponsor register · A-rated Worker licences only")
