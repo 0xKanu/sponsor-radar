@@ -7,6 +7,7 @@ from pathlib import Path
 from rapidfuzz import fuzz, process
 
 from match import load_sponsors, normalize
+from present import COLUMNS, growth_str, hq_city, round_label
 
 DATA = Path(__file__).resolve().parent.parent / "data"
 
@@ -41,27 +42,32 @@ def main():
             + 0.2 * min((c.get("employee_count_1y_growth") or 0) / 100, 1.0)
             + 0.1 * ((c.get("signal_rating") or 0) / 100)
         )
-        hq = next(
-            (loc.get("city", {}).get("name") for loc in c.get("locations", []) if loc.get("role") == "hq"),
-            None,
-        )
+        hq = hq_city(c)
+        amount_m = round((tx.get("amount") or 0) / 1e6, 2)
         out.append(
             {
                 "company": name,
                 "hq_city": hq,
-                "round": f"{tx.get('year')}-{tx.get('month')} {tx.get('standardized_round')}",
-                "amount_m": round((tx.get("amount") or 0) / 1e6, 2),
-                "open_roles": jobs.get("open_count"),
+                "scope": "uk",
+                "round_label": round_label(tx, amount_m),
+                "std_round": tx.get("standardized_round") or "",
+                "year": tx.get("year") or "",
+                "month": tx.get("month") or "",
+                "amount_m": amount_m,
+                "open_roles": jobs.get("open_count") or 0,
+                "growth_1y": growth_str(c.get("employee_count_1y_growth")),
+                "signal": c.get("signal_rating") or "",
                 "sponsor": s.get("Organisation Name"),
-                "match_score": round(score, 1),
+                "sponsor_route": s.get("Route"),
+                "verified": score >= 90,
                 "score": round(base, 3),
                 "dealroom_url": c.get("dealroom_url"),
             }
         )
-    out.sort(key=lambda x: x["score"], reverse=True)
+    out.sort(key=lambda x: (x["verified"], x["score"]), reverse=True)
     fn = DATA / f"shortlist_uk_{date.today().isoformat()}.csv"
     with open(fn, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=list(out[0].keys()))
+        w = csv.DictWriter(f, fieldnames=COLUMNS)
         w.writeheader()
         w.writerows(out)
     print(f"saved {fn} with {len(out)} rows")

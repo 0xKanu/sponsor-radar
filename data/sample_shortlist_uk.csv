@@ -1,17 +1,17 @@
-company,hq_city,round,amount_m,open_roles,sponsor,match_score,score,dealroom_url
-Dwelly,London,2026-7 Series B,95.0,48,Dwell Homecare Limited,81.8,0.995,https://app.dealroom.co/companies/dwelly_
-ElevenLabs,London,2026-9 Series E,500.0,186,Eleven Labs Ltd,81.0,0.963,https://app.dealroom.co/companies/elevenlabs_1
-Fractile,London,2026-8 Series C,600.0,15,Fractile Ltd,100.0,0.92,https://app.dealroom.co/companies/fractile
-Humanoid,London,2026-7 Series A,152.0,93,Humaz,80.0,0.916,https://app.dealroom.co/companies/humanoid_2
-Open Cosmos,Harwell,2026-9 Series D,346.0,16,Open Cosmos Limited,100.0,0.859,https://app.dealroom.co/companies/open_cosmos
-FNZ,London,2026-9 Growth,450.0,42,FNZ (UK) Limited,100.0,0.794,https://app.dealroom.co/companies/fnz
-Volta,London,2026-8 Series A,225.0,49,Black Volta Ventures (UK) Limited,90.0,0.76,https://app.dealroom.co/companies/volta_11
-Leo Cancer Care,Horley,2026-7 Series D,65.0,14,Leo Cancer Care,100.0,0.725,https://app.dealroom.co/companies/leo_cancer_care
-Kraken Technology,London,2026-7 Series B,175.0,0,Kraken Technologies Limited,100.0,0.693,https://app.dealroom.co/companies/kraken_technology
-Basecamp Research,London,2026-9 Series C,140.0,9,Basecamp Research,100.0,0.677,https://app.dealroom.co/companies/basecamp_research
-CityFibre,London,2026-7 Growth,1188.0,14,Cityfibre Holdings Ltd,100.0,0.662,https://app.dealroom.co/companies/cityfibre
-Draig Therapeutics,Cardiff,2026-7 Series B,65.0,3,Accession Therapeutics Limited,85.5,0.649,https://app.dealroom.co/companies/draig_therapeutics
-Callosum,London,2026-8 Seed,100.0,9,Callosum Ltd,100.0,0.628,https://app.dealroom.co/companies/callosum_1
-Nexeon,Sutton Courtenay,2026-8 Series F+,132.0,0,Nexeon Limited,100.0,0.521,https://app.dealroom.co/companies/nexeon
-Cambridge Aerospace,Cambridge,2026-8 Series C,300.0,0,Cambridge Aerospace Limited,100.0,0.494,https://app.dealroom.co/companies/cambridge_aerospace
-Stability AI,London,2026-8 Series B,76.0,1,Stability AI Ltd,100.0,0.493,https://app.dealroom.co/companies/stability_ai
+company,hq_city,scope,round_label,std_round,year,month,amount_m,open_roles,growth_1y,signal,sponsor,sponsor_route,verified,score,dealroom_url
+Fractile,London,uk,Series C · Aug 2026 · $600.0M,Series C,2026,8,600.0,15,118%,94.97,Fractile Ltd,Skilled Worker,True,0.92,https://app.dealroom.co/companies/fractile
+Open Cosmos,Harwell,uk,Series D · Sep 2026 · $346.0M,Series D,2026,9,346.0,16,61%,96,Open Cosmos Limited,Global Business Mobility: Senior or Specialist Worker,True,0.859,https://app.dealroom.co/companies/open_cosmos
+FNZ,London,uk,Growth · Sep 2026 · $450.0M,Growth,2026,9,450.0,42,5%,83.9,FNZ (UK) Limited,Skilled Worker,True,0.794,https://app.dealroom.co/companies/fnz
+Volta,London,uk,Series A · Aug 2026 · $225.0M,Series A,2026,8,225.0,49,,59.98,Black Volta Ventures (UK) Limited,Skilled Worker,True,0.76,https://app.dealroom.co/companies/volta_11
+Leo Cancer Care,Horley,uk,Series D · Jul 2026 · $65.0M,Series D,2026,7,65.0,14,14%,87.39,Leo Cancer Care,Skilled Worker,True,0.725,https://app.dealroom.co/companies/leo_cancer_care
+Kraken Technology,London,uk,Series B · Jul 2026 · $175.0M,Series B,2026,7,175.0,0,595%,92.93,Kraken Technologies Limited,Skilled Worker,True,0.693,https://app.dealroom.co/companies/kraken_technology
+Basecamp Research,London,uk,Series C · Sep 2026 · $140.0M,Series C,2026,9,140.0,9,26%,89.57,Basecamp Research,Skilled Worker,True,0.677,https://app.dealroom.co/companies/basecamp_research
+CityFibre,London,uk,Growth · Jul 2026 · $1.19B,Growth,2026,7,1188.0,14,-7%,65.93,Cityfibre Holdings Ltd,Skilled Worker,True,0.662,https://app.dealroom.co/companies/cityfibre
+Callosum,London,uk,Seed · Aug 2026 · $100.0M,Seed,2026,8,100.0,9,,92.81,Callosum Ltd,Skilled Worker,True,0.628,https://app.dealroom.co/companies/callosum_1
+Nexeon,Sutton Courtenay,uk,Series F+ · Aug 2026 · $132.0M,Series F+,2026,8,132.0,0,15%,91.47,Nexeon Limited,Skilled Worker,True,0.521,https://app.dealroom.co/companies/nexeon
+Cambridge Aerospace,Cambridge,uk,Series C · Aug 2026 · $300.0M,Series C,2026,8,300.0,0,,93.99,Cambridge Aerospace Limited,Skilled Worker,True,0.494,https://app.dealroom.co/companies/cambridge_aerospace
+Stability AI,London,uk,Series B · Aug 2026 · $76.0M,Series B,2026,8,76.0,1,1%,76.27,Stability AI Ltd,Skilled Worker,True,0.493,https://app.dealroom.co/companies/stability_ai
+Dwelly,London,uk,Series B · Jul 2026 · $95.0M,Series B,2026,7,95.0,48,125%,94.9,Dwell Homecare Limited,Skilled Worker,False,0.995,https://app.dealroom.co/companies/dwelly_
+ElevenLabs,London,uk,Series E · Sep 2026 · $500.0M,Series E,2026,9,500.0,186,83%,96.95,Eleven Labs Ltd,Skilled Worker,False,0.963,https://app.dealroom.co/companies/elevenlabs_1
+Humanoid,London,uk,Series A · Jul 2026 · $152.0M,Series A,2026,7,152.0,93,61%,93.91,Humaz,Skilled Worker,False,0.916,https://app.dealroom.co/companies/humanoid_2
+Draig Therapeutics,Cardiff,uk,Series B · Jul 2026 · $65.0M,Series B,2026,7,65.0,3,55%,93.35,Accession Therapeutics Limited,Skilled Worker,False,0.649,https://app.dealroom.co/companies/draig_therapeutics

@@ -1,8 +1,10 @@
-"""Score: 0.4 funding + 0.3 hiring + 0.2 growth + 0.1 signal, x sponsor boost."""
+"""Score: 0.4 funding + 0.3 hiring + 0.2 growth + 0.1 signal. A-rated only. Display-ready schema."""
 import csv
 import json
 from datetime import date
 from pathlib import Path
+
+from present import COLUMNS, growth_str, hq_city, round_label
 
 DATA = Path(__file__).resolve().parent.parent / "data"
 
@@ -31,26 +33,33 @@ def main():
             + 0.1 * ((c.get("signal_rating") or 0) / 100)
         )
         boost = 1.0
+        amount_m = round((tx.get("amount") or 0) / 1e6, 2)
+        match_score = m.get("score") or 0
         out.append(
             {
                 "company": c.get("name"),
-                "round": f"{tx.get('year')}-{tx.get('month')} {tx.get('standardized_round')}",
-                "amount_m": round((tx.get("amount") or 0) / 1e6, 2),
-                "open_roles": jobs.get("open_count"),
-                "growth_1y": c.get("employee_count_1y_growth"),
-                "signal": c.get("signal_rating"),
+                "hq_city": hq_city(c),
+                "scope": "london",
+                "round_label": round_label(tx, amount_m),
+                "std_round": tx.get("standardized_round") or "",
+                "year": tx.get("year") or "",
+                "month": tx.get("month") or "",
+                "amount_m": amount_m,
+                "open_roles": jobs.get("open_count") or 0,
+                "growth_1y": growth_str(c.get("employee_count_1y_growth")),
+                "signal": c.get("signal_rating") or "",
                 "sponsor": m.get("sponsor_name"),
-                "sponsor_rating": m.get("rating"),
                 "sponsor_route": m.get("route"),
-                "match_score": m.get("score"),
+                "verified": match_score >= 90,
                 "score": round(base * boost, 3),
                 "dealroom_url": c.get("dealroom_url"),
             }
         )
-    out.sort(key=lambda x: x["score"], reverse=True)
+    # Verified matches first, then by score.
+    out.sort(key=lambda x: (x["verified"], x["score"]), reverse=True)
     fn = DATA / f"shortlist_{date.today().isoformat()}.csv"
     with open(fn, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=list(out[0].keys()))
+        w = csv.DictWriter(f, fieldnames=COLUMNS)
         w.writeheader()
         w.writerows(out)
     print(f"saved {fn} with {len(out)} rows")
