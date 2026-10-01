@@ -22,26 +22,6 @@ def load_sponsors() -> list[dict]:
         return list(csv.DictReader(f))
 
 
-def match_one(company_name: str, domain: str, sponsors: list[dict]):
-    key = normalize(company_name)
-    normed = [(s, normalize(s.get("Organisation Name", ""))) for s in sponsors]
-    for s, ns in normed:
-        if ns and ns == key:
-            return s, 100.0, "exact"
-    if domain:
-        stem = re.sub(r"[^a-z0-9]", "", domain.split(".")[0].lower())
-        for s, ns in normed:
-            if stem and len(stem) > 4 and (stem == ns or stem in ns):
-                return s, 95.0, "domain"
-    best, best_score = None, 0.0
-    for s in sponsors:
-        sc = fuzz.WRatio(company_name.lower(), s.get("Organisation Name", "").lower())
-        if sc > best_score:
-            best, best_score = s, sc
-    tier = "fuzzy" if best_score >= 90 else ("review" if best_score >= 80 else "reject")
-    return best, best_score, tier
-
-
 def main():
     rows = json.loads((DATA / "dealroom_raw.json").read_text())
     sponsors = load_sponsors()

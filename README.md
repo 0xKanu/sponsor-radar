@@ -20,3 +20,7 @@ streamlit run src/app.py
 
 ## Method
 VC defaults per `dealroom-api-analysis.md`: `is_vc_round`, exclude Mature 412 + Outside Tech 1102801, HQ London only, standardized rounds.
+
+## Data & attribution
+- Company/funding data: [Dealroom](https://dealroom.co) via the Dealroom API (hackathon key, read-only). Committed `data/sample_*.csv` files are small derived demo snapshots — regenerate fresh via the pipeline; do not redistribute raw API responses.
+- Sponsor data: [GOV.UK Register of licensed sponsors: workers](https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers) (public, updated daily).
