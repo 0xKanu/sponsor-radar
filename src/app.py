@@ -1,6 +1,5 @@
-"""Streamlit dashboard: ranked shortlist, new-this-week, review queue, methodology."""
+"""Streamlit dashboard: London shortlist, Top UK, review queue, methodology."""
 import glob
-import json
 from pathlib import Path
 
 import pandas as pd
@@ -10,39 +9,51 @@ DATA = Path(__file__).resolve().parent.parent / "data"
 
 st.set_page_config(page_title="Sponsor Radar", layout="wide")
 st.title("London Sponsor Radar")
-st.caption("Freshly funded London startups × GOV.UK sponsor register")
+st.caption("Freshly funded startups × GOV.UK sponsor register — money + hiring + visa licence")
 
 
-def load_shortlist() -> pd.DataFrame | None:
-    files = sorted(glob.glob(str(DATA / "shortlist_*.csv")))
-    return pd.read_csv(files[-1]) if files else None
+def load_csv(prefix: str, sample: str) -> pd.DataFrame | None:
+    files = sorted(glob.glob(str(DATA / f"{prefix}_*.csv")))
+    # Prefer full dated shortlists; fall back to committed samples (e.g. Streamlit Cloud).
+    if files:
+        return pd.read_csv(files[-1])
+    sp = DATA / sample
+    return pd.read_csv(sp) if sp.exists() else None
 
 
-tab1, tab2, tab3 = st.tabs(["Shortlist", "Review queue", "Methodology"])
-
-with tab1:
-    df = load_shortlist()
+def shortlist_tab(df: pd.DataFrame | None, empty_msg: str):
     if df is None:
-        st.info("Run the pipeline to populate data/shortlist CSV.")
-    else:
-        min_amt = st.slider("Min round (£M)", 0.0, float(df["amount_m"].max()), 0.0)
-        show = df[df["amount_m"] >= min_amt]
-        st.dataframe(show, use_container_width=True)
-        st.caption(f"{len(show)} companies · ranked by funding + hiring + growth + signal")
+        st.info(empty_msg)
+        return
+    min_amt = st.slider("Min round (£M)", 0.0, float(df["amount_m"].max()), 0.0, key=f"amt_{empty_msg[:4]}")
+    show = df[df["amount_m"] >= min_amt]
+    st.dataframe(show, use_container_width=True)
+    st.caption(f"{len(show)} companies · 0.4 funding + 0.3 hiring + 0.2 growth + 0.1 signal · A-rated only")
 
-with tab2:
-    mp = DATA / "matches.json"
-    if not mp.exists():
-        st.info("No matches yet.")
-    else:
-        m = pd.DataFrame(json.loads(mp.read_text()))
-        q = m[m["tier"] == "review"].sort_values("score", ascending=False)
-        st.dataframe(q[["dealroom_name", "sponsor_name", "score", "town"]], use_container_width=True)
-        st.caption(f"{len(q)} matches need manual review (score 80–90)")
 
-with tab3:
+tab_london, tab_uk, tab_review, tab_method = st.tabs(
+    ["London shortlist", "Top UK", "Review queue", "Methodology"]
+)
+
+with tab_london:
+    shortlist_tab(load_csv("shortlist_2", "sample_shortlist.csv"),
+                  "Run the pipeline to populate the London shortlist.")
+
+with tab_uk:
+    shortlist_tab(load_csv("shortlist_uk", "sample_shortlist_uk.csv"),
+                  "Run src/ingest_uk.py + src/rank_uk.py for the UK-wide view.")
+
+with tab_review:
     st.markdown(
-        "- VC defaults: `is_vc_round`, exclude Mature 412 + Outside Tech 1102801\n"
-        "- HQ London only (628061), standardized rounds, `date` takes YYYY-MM\n"
-        "- Score: 0.4 funding + 0.3 hiring + 0.2 growth + 0.1 signal, A-rated boost"
+        "Fuzzy matches scoring 80–90 land here for manual accept/reject. "
+        "Known traps: same-name nurseries, civil-engineering firms, similarly named ventures — "
+        "always check the `dealroom_url` before applying."
+    )
+
+with tab_method:
+    st.markdown(
+        "- **VC defaults** (`dealroom-api-analysis.md`): `is_vc_round`, exclude Mature `412` + Outside Tech `1102801`, standardized rounds\n"
+        "- **London** = HQ city `628061` · **UK** = country `93` · `date` filter takes `YYYY-MM`\n"
+        "- **Sponsor filter**: A-rated Worker licences only — B-rated sponsors can't issue new CoS\n"
+        "- **Hypothesis test**: compare round `year-month` vs open `open_roles` — fresh funding with live postings surfaces employers earlier than job boards"
     )

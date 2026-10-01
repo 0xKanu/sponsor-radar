@@ -21,13 +21,16 @@ def main():
         m = matches.get(c.get("uuid"), {})
         if m.get("tier") == "reject":
             continue
+        # Hard exclude: only A-rated Worker licences can issue new CoS.
+        if not (m.get("rating") or "").startswith("Worker (A"):
+            continue
         base = (
             0.4 * score_tx(tx.get("amount"))
             + 0.3 * min((jobs.get("open_count") or 0) / 20, 1.0)
             + 0.2 * min(((c.get("employee_count_1y_growth")) or 0) / 100, 1.0)
             + 0.1 * ((c.get("signal_rating") or 0) / 100)
         )
-        boost = 1.0 if (m.get("rating") or "").startswith("Worker (A") else 0.5
+        boost = 1.0
         out.append(
             {
                 "company": c.get("name"),
