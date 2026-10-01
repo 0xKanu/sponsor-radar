@@ -21,11 +21,11 @@ def load_csv(prefix: str, sample: str) -> pd.DataFrame | None:
     return pd.read_csv(sp) if sp.exists() else None
 
 
-def shortlist_tab(df: pd.DataFrame | None, empty_msg: str):
+def shortlist_tab(df: pd.DataFrame | None, empty_msg: str, key: str):
     if df is None:
         st.info(empty_msg)
         return
-    min_amt = st.slider("Min round (£M)", 0.0, float(df["amount_m"].max()), 0.0, key=f"amt_{empty_msg[:4]}")
+    min_amt = st.slider("Min round (£M)", 0.0, float(df["amount_m"].max()), 0.0, key=key)
     show = df[df["amount_m"] >= min_amt]
     st.dataframe(show, use_container_width=True)
     st.caption(f"{len(show)} companies · 0.4 funding + 0.3 hiring + 0.2 growth + 0.1 signal · A-rated only")
@@ -37,11 +37,11 @@ tab_london, tab_uk, tab_review, tab_method = st.tabs(
 
 with tab_london:
     shortlist_tab(load_csv("shortlist_2", "sample_shortlist.csv"),
-                  "Run the pipeline to populate the London shortlist.")
+                  "Run the pipeline to populate the London shortlist.", key="amt_london")
 
 with tab_uk:
     shortlist_tab(load_csv("shortlist_uk", "sample_shortlist_uk.csv"),
-                  "Run src/ingest_uk.py + src/rank_uk.py for the UK-wide view.")
+                  "Run src/ingest_uk.py + src/rank_uk.py for the UK-wide view.", key="amt_uk")
 
 with tab_review:
     st.markdown(
